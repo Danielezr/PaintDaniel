@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Paint Básico</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="app.js" defer></script>
+
+</head>
+<body>
+
+  <div id="general">
+    <div id="menu">
+      <h2>Herramientas</h2>
+      <div class="tools">
+        <!-- Selección -->
+        <div class="button" ref="selection" title="Seleccionar">
+          <div><img src="images/tool_selection.png" alt="Seleccionar" /></div>
+        </div>
+
+        <!-- Figuras básicas -->
+        <div class="button" ref="line" title="Línea">
+          <div><img src="images/tool_line.png" alt="Línea" /></div>
+        </div>
+        <div class="button" ref="rect" title="Rectángulo">
+          <div><img src="images/tool_polygon.png" alt="Rectángulo" /></div>
+        </div>
+        <div class="button" ref="circle" title="Círculo">
+          <div><img src="images/tool_points.png" alt="Círculo" /></div>
+        </div>
+
+        <!-- Curvas Bézier -->
+        <div class="button" ref="quadraticCurve" title="Bézier Cuadrática">
+          <div><img src="images/tool_quadratic_curve.png" alt="Bézier Cuadrática" /></div>
+        </div>
+        <div class="button" ref="bezierCurve" title="Bézier Cúbica">
+          <div><img src="images/tool_bezier_curve.png" alt="Bézier Cúbica" /></div>
+        </div>
+
+        <!-- Transformaciones -->
+        <div class="button" ref="scale" title="Redimensionar">
+          <div><img src="images/tool_scale.png" alt="Escalar" /></div>
+        </div>
+        <div class="button" ref="rotation" title="Rotar">
+          <div><img src="images/tool_rotation.png" alt="Rotar" /></div>
+        </div>
+
+        <div class="clear"></div>
+      </div>
+
+      
+	  <h2>Propiedades</h2>
+		<div class="tools">
+		<label for="colorTrazo">Color del trazo:</label>
+		<input type="color" id="colorTrazo" value="#000000">
+
+		<label for="colorRelleno">Color de relleno:</label>
+		<input type="color" id="colorRelleno" value="#ffffff">
+
+		<label for="grosorLinea">Grosor:</label>
+		<input type="range" id="grosorLinea" min="1" max="10" value="2">
+		</div>
+      <div class="options">
+      <h2>Opciones</h2>
+        <button id="clearCanvas">🧹 Borrar Todo</button>
+        <button id="exportPNG">💾 Exportar PNG</button>
+      </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+  </div>
+
+</body>
+</html>
