@@ -1,111 +1,134 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+}
+
+:root{
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-2: #06b6d4;
+  --shadow: 0 8px 24px rgba(2,6,23,0.06);
+  --radius: 10px;
+  --toolbar-bg: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(247,250,255,0.95));
 }
 
 body {
-  font-family: Helvetica, sans-serif;
-  background: #f5f5f5;
-  color: #444;
-  font-size: 12px;
+  font-family: Inter, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: #111827;
+  font-size: 13px;
   overflow: hidden;
 }
 
-div#general {
+#general {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 10px;
+  padding: 18px;
+  justify-content: center;
+  gap: 20px;
 }
 
 canvas {
   background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-left: 140px;
+  border: 1px solid rgba(2,6,23,0.06);
+  border-radius: 8px;
   cursor: crosshair;
+  box-shadow: var(--shadow);
+  max-width: calc(100vw - 240px);
 }
 
-div#menu {
-  width: 120px;
-  padding: 10px;
-  background: rgba(0,0,0,0.1);
-  border: 1px solid rgba(0,0,0,0.2);
-  border-radius: 10px;
-  box-shadow: 1px 1px 4px #aaa;
-  opacity: 0.9;
+#menu {
+  width: 160px;
+  padding: 14px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(2,6,23,0.04);
 }
 
-div#menu h2 {
-  font-size: 13px;
+#menu h2 {
+  font-size: 12px;
   text-transform: uppercase;
-  font-weight: bold;
-  margin: 8px 0;
-  border-bottom: 1px dotted #777;
-  padding-bottom: 4px;
+  font-weight: 700;
+  margin: 6px 0 10px 0;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(2,6,23,0.04);
+  padding-bottom: 8px;
 }
 
-div.tools {
-  margin-bottom: 10px;
+div.tools { margin-bottom: 12px; }
+
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, 56px);
+  grid-auto-rows: 56px;
+  gap: 10px;
+  background: var(--toolbar-bg);
+  padding: 8px;
+  border-radius: 8px;
 }
+
+.toolbar .button { float: none; margin: 0; box-shadow: 0 4px 10px rgba(2,6,23,0.04); }
+.toolbar .clear { display: none; }
 
 div.tools div.button {
-  float: left;
-  width: 46px;
-  height: 46px;
-  border: 1px solid #ccc;
-  background: #eee;
-  border-radius: 6px;
-  margin: 2px;
-  box-shadow: 1px 1px 1px #ddd;
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(2,6,23,0.04);
+  background: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
   cursor: pointer;
 }
 
-div.tools div.button div {
-  width: 46px;
-  height: 46px;
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-}
+div.tools div.button div { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+div.tools div.button img { width: 26px; height: 26px; }
 
-div.tools div.button:hover {
-  background: #fff;
-  border-color: #777;
-}
+div.tools div.button:hover { background: rgba(37,99,235,0.06); }
 
 div.tools div.button.selected {
-  background: #ccc;
-  border: 2px solid #333;
+  background: rgba(37,99,235,0.12);
+  box-shadow: 0 8px 18px rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.14);
 }
 
 button#clearCanvas, button#exportPNG {
   width: 100%;
-  margin-top: 6px;
-  padding: 6px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  background: #fafafa;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid rgba(2,6,23,0.06);
+  border-radius: 8px;
+  background: linear-gradient(180deg,#fff,#fbfdff);
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-button#clearCanvas:hover, button#exportPNG:hover {
-  background: #ddd;
-}
+button#clearCanvas:hover, button#exportPNG:hover { background: #f4f7ff; }
 
 .tools label {
   display: block;
   margin-top: 6px;
-  font-weight: bold;
-  font-size: 11px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--muted);
 }
 
-.tools input[type="color"],
-.tools input[type="range"] {
+.tools input[type="color"], .tools input[type="range"] {
   width: 100%;
-  margin-top: 2px;
+  margin-top: 6px;
   margin-bottom: 6px;
-  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  #general { flex-direction: column; align-items: center; }
+  #menu { width: 92%; }
+  canvas { max-width: 92vw; }
 }
 

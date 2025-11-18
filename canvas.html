@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Paint Básico</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="app.js" defer></script>
@@ -13,7 +14,7 @@
   <div id="general">
     <div id="menu">
       <h2>Herramientas</h2>
-      <div class="tools">
+      <div class="tools toolbar">
         <!-- Selección -->
         <div class="button" ref="selection" title="Seleccionar">
           <div><img src="images/tool_selection.png" alt="Seleccionar" /></div>
@@ -63,8 +64,8 @@
 		</div>
       <div class="options">
       <h2>Opciones</h2>
-        <button id="clearCanvas">🧹 Borrar Todo</button>
-        <button id="exportPNG">💾 Exportar PNG</button>
+        <button id="clearCanvas">Limpiar Canvas</button>
+        <button id="exportPNG">Guardar PNG</button>
       </div>
     </div>
 

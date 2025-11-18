@@ -1,6 +1,5 @@
 (function ($) {
   $(document).ready(function () {
-    console.log("✅ Etapa 10 — Curvas Bézier integradas (cuadrática y cúbica).");
 
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -19,8 +18,6 @@
     let handleSeleccionado = null;
     let anguloInicial = 0;
     let anguloActual = 0;
-
-    // === Panel de propiedades (Etapa 9) ===
     let colorTrazo = "#000000";
     let colorRelleno = "#ffffff";
     let grosorLinea = 2;
@@ -29,15 +26,11 @@
     $("#colorRelleno").on("input", function () { colorRelleno = $(this).val(); });
     $("#grosorLinea").on("input", function () { grosorLinea = parseInt($(this).val()); });
 
-    // === Estado para Bézier (Etapa 10) ===
     let puntosQ = [];   // cuadrática: [P0], [C], [P2]
     let puntosC = [];   // cúbica: [P0], [C1], [C2], [P2]
     let previewBezier = false;
 
-    // =============================
-    // ==== CLASES DE FIGURAS =====
-    // =============================
-
+    //CLASES DE FIGURAS
     class Figura {
       constructor() { this.selected = false; this.angle = 0; }
       draw() {}
@@ -76,6 +69,82 @@
         ctx.fillRect(this.x1 - 4, this.y1 - 4, 8, 8);
         ctx.fillRect(this.x2 - 4, this.y2 - 4, 8, 8);
       }
+      getHandleAt(x, y) {
+        if (Math.hypot(x - this.x1, y - this.y1) < 6) return "start";
+        if (Math.hypot(x - this.x2, y - this.y2) < 6) return "end";
+        return null;
+      }
+      getCenter() { return { x: (this.x1 + this.x2)/2, y: (this.y1 + this.y2)/2 }; }
+      isInside(x, y) {
+        const dist = Math.abs((this.y2 - this.y1) * x - (this.x2 - this.x1) * y + this.x2 * this.y1 - this.y2 * this.x1) /
+                     Math.hypot(this.y2 - this.y1, this.x2 - this.x1);
+        return dist < 6;
+      }
+      move(dx, dy) { this.x1 += dx; this.y1 += dy; this.x2 += dx; this.y2 += dy; }
+    }
+
+    // Línea usando algoritmo de Bresenham
+    // Esta clase implementa el algoritmo de Bresenham
+    class LineaBresenham extends Figura {
+      constructor(x1, y1, x2, y2, color, grosor) {
+        super();
+        // Redondeamos las coordenadas porque Bresenham trabaja en la
+        // rejilla de píxeles (enteros). También aseguramos que el
+        // grosor sea al menos 1 y entero.
+        this.x1 = Math.round(x1); this.y1 = Math.round(y1);
+        this.x2 = Math.round(x2); this.y2 = Math.round(y2);
+        this.color = color; this.grosor = Math.max(1, Math.round(grosor));
+      }
+
+      // Dibuja la línea usando el algoritmo principal de Bresenham.
+      draw() {
+        //guardamos el fillStyle anterior para restaurarlo después.
+        const oldFill = ctx.fillStyle;
+        ctx.fillStyle = this.color;
+
+        const x1 = this.x1, y1 = this.y1, x2 = this.x2, y2 = this.y2;
+
+        // dx y dy según la formulación clásica (dy es negativa)
+        let dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+        let dy = -Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+        let err = dx + dy; // error acumulado (inicial)
+
+        let x = x1, y = y1;
+
+        //calculamos la mitad del grosor para centrar los cuadrados
+        // que usamos como 'píxeles' cuando grosor > 1.
+        const half = Math.floor(this.grosor / 2);
+
+        // Bucle principal: avanzamos hasta llegar al punto final.
+        while (true) {
+          ctx.fillRect(x - half, y - half, this.grosor, this.grosor);
+          if (x === x2 && y === y2) break;
+
+          // Doble error para decidir avance en x o y (o ambos).
+          let e2 = 2 * err;
+          if (e2 >= dy) { // mover en x
+            err += dy; // ajustar error
+            x += sx;   // paso en x según el signo
+          }
+          if (e2 <= dx) { // mover en y
+            err += dx; // ajustar error
+            y += sy;   // paso en y según el signo
+          }
+        }
+
+        // Restauramos el estilo de relleno previo
+        ctx.fillStyle = oldFill;
+
+        if (this.selected) this.drawHandles();
+      }
+
+      drawHandles() {
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x1 - 4, this.y1 - 4, 8, 8);
+        ctx.fillRect(this.x2 - 4, this.y2 - 4, 8, 8);
+      }
+
+      // Métodos auxiliares para interacción (coinciden con Linea)
       getHandleAt(x, y) {
         if (Math.hypot(x - this.x1, y - this.y1) < 6) return "start";
         if (Math.hypot(x - this.x2, y - this.y2) < 6) return "end";
@@ -162,7 +231,7 @@
       move(dx, dy) { this.x += dx; this.y += dy; }
     }
 
-    // ===== Bézier cuadrática =====
+    //bézier cuadrática 
     class BezierCuadratica extends Figura {
       constructor(x1, y1, cx, cy, x2, y2, color, grosor) {
         super();
@@ -217,7 +286,7 @@
       move(dx, dy) { this.x1+=dx; this.y1+=dy; this.cx+=dx; this.cy+=dy; this.x2+=dx; this.y2+=dy; }
     }
 
-    // ===== Bézier cúbica =====
+    //bézier cúbica 
     class BezierCubica extends Figura {
       constructor(x1, y1, c1x, c1y, c2x, c2y, x2, y2, color, grosor) {
         super();
@@ -276,9 +345,7 @@
       }
     }
 
-    // =============================
-    // ======== DIBUJAR TODO =======
-    // =============================
+    //dibujar todo
     function dibujarTodo() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       figuras.forEach(f => f.draw());
@@ -320,10 +387,7 @@
       }
     }
 
-    // =============================
-    // ========= EVENTOS ===========
-    // =============================
-
+    //eventos
     $(".button").click(function () {
       $(".button").removeClass("selected");
       $(this).addClass("selected");
@@ -476,7 +540,7 @@
       if (isDrawing) {
         const endX = event.offsetX, endY = event.offsetY;
         switch (herramienta) {
-          case "line": figuras.push(new Linea(startX, startY, endX, endY, colorTrazo, grosorLinea)); break;
+          case "line": figuras.push(new LineaBresenham(startX, startY, endX, endY, colorTrazo, grosorLinea)); break;
           case "rect": figuras.push(new Rectangulo(startX, startY, endX - startX, endY - startY, colorTrazo, grosorLinea, colorRelleno)); break;
           case "circle": const r = Math.hypot(endX - startX, endY - startY); figuras.push(new Circulo(startX, startY, r, colorTrazo, grosorLinea, colorRelleno)); break;
         }
@@ -487,7 +551,7 @@
       dibujarTodo();
     });
 
-    // === Captura de clics para construir Bézier ===
+    //captura de clics para construir Bézier
     $("#canvas").click(function (e) {
       const x = e.offsetX, y = e.offsetY;
 
@@ -514,7 +578,7 @@
       }
     });
 
-    // === utilidades ===
+    //utilidades
     $("#clearCanvas").click(() => { figuras = []; figuraSeleccionada = null; puntosQ=[]; puntosC=[]; previewBezier=false; dibujarTodo(); });
     $("#exportPNG").click(() => {
       const link = document.createElement("a");
